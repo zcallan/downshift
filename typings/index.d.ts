@@ -27,7 +27,7 @@ export enum StateChangeTypes {
 }
 
 export interface BreakingChangesProps {
-  resetInputOnSelection?: boolean;
+  resetInputOnSelection?: boolean
 }
 
 export interface DownshiftProps<Item> {
@@ -57,7 +57,7 @@ export interface DownshiftProps<Item> {
   stateReducer?: (
     state: DownshiftState<Item>,
     changes: StateChangeOptions<Item>,
-  ) => StateChangeOptions<Item>
+  ) => Partial<StateChangeOptions<Item>>
   itemCount?: number
   highlightedIndex?: number
   inputValue?: string
@@ -72,7 +72,7 @@ export interface DownshiftProps<Item> {
     options: StateChangeOptions<Item>,
     stateAndHelpers: ControllerStateAndHelpers<Item>,
   ) => void
-  breakingChanges?: BreakingChangesProps;
+  breakingChanges?: BreakingChangesProps
 }
 
 export interface Environment {
@@ -91,7 +91,8 @@ export interface A11yStatusMessageOptions<Item> {
   selectedItem: Item
 }
 
-export interface StateChangeOptions<Item> extends DownshiftState<Item>  {
+export interface StateChangeOptions<Item>
+  extends Partial<DownshiftState<Item>> {
   type: StateChangeTypes
 }
 
@@ -133,17 +134,30 @@ export interface PropGetters<Item> {
 }
 
 export interface Actions<Item> {
-  reset: (otherStateToSet?: Partial<StateChangeOptions<Item>>, cb?: Callback) => void
+  reset: (
+    otherStateToSet?: Partial<StateChangeOptions<Item>>,
+    cb?: Callback,
+  ) => void
   openMenu: (cb?: Callback) => void
   closeMenu: (cb?: Callback) => void
-  toggleMenu: (otherStateToSet?: Partial<StateChangeOptions<Item>>, cb?: Callback) => void
-  selectItem: (item: Item, otherStateToSet?: Partial<StateChangeOptions<Item>>, cb?: Callback) => void
+  toggleMenu: (
+    otherStateToSet?: Partial<StateChangeOptions<Item>>,
+    cb?: Callback,
+  ) => void
+  selectItem: (
+    item: Item,
+    otherStateToSet?: Partial<StateChangeOptions<Item>>,
+    cb?: Callback,
+  ) => void
   selectItemAtIndex: (
     index: number,
     otherStateToSet?: Partial<StateChangeOptions<Item>>,
     cb?: Callback,
   ) => void
-  selectHighlightedItem: (otherStateToSet?: Partial<StateChangeOptions<Item>>, cb?: Callback) => void
+  selectHighlightedItem: (
+    otherStateToSet?: Partial<StateChangeOptions<Item>>,
+    cb?: Callback,
+  ) => void
   setHighlightedIndex: (
     index: number,
     otherStateToSet?: Partial<StateChangeOptions<Item>>,
