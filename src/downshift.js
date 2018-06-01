@@ -583,8 +583,9 @@ class Downshift extends Component {
     // don't give the button the focus properly.
     /* istanbul ignore if (can't reasonably test this) */
     if (
+      preval`module.exports = process.env.BUILD_REACT_NATIVE !== 'true'` &&
       this.props.environment.document.activeElement ===
-      this.props.environment.document.body
+        this.props.environment.document.body
     ) {
       event.target.focus()
     }
@@ -656,30 +657,43 @@ class Downshift extends Component {
       )
     }
     this.inputId = firstDefined(this.inputId, rest.id, `${this.id}-input`)
-    let onChangeKey
-    /* istanbul ignore next (preact) */
-    if (preval`module.exports = process.env.BUILD_PREACT === 'true'`) {
-      onChangeKey = 'onInput'
+    let eventHandlers
+    if (rest.disabled) {
+      eventHandlers = {}
+      /* istanbul ignore next (preact) */
+    } else if (preval`module.exports = process.env.BUILD_PREACT === 'true'`) {
+      eventHandlers = {
+        onInput: composeEventHandlers(
+          onChange,
+          onInput,
+          this.input_handleChange,
+        ),
+        onKeyDown: composeEventHandlers(onKeyDown, this.input_handleKeyDown),
+        onBlur: composeEventHandlers(onBlur, this.input_handleBlur),
+      }
       /* istanbul ignore next (react-native) */
     } else if (
       preval`module.exports = process.env.BUILD_REACT_NATIVE === 'true'`
     ) {
-      onChangeKey = 'onChangeText'
+      eventHandlers = {
+        onChangeText: composeEventHandlers(
+          onChange,
+          onInput,
+          this.input_handleChange,
+        ),
+      }
     } else {
-      onChangeKey = 'onChange'
+      eventHandlers = {
+        onChange: composeEventHandlers(
+          onChange,
+          onInput,
+          this.input_handleChange,
+        ),
+        onKeyDown: composeEventHandlers(onKeyDown, this.input_handleKeyDown),
+        onBlur: composeEventHandlers(onBlur, this.input_handleBlur),
+      }
     }
     const {inputValue, isOpen, highlightedIndex} = this.getState()
-    const eventHandlers = rest.disabled
-      ? {}
-      : {
-          [onChangeKey]: composeEventHandlers(
-            onChange,
-            onInput,
-            this.input_handleChange,
-          ),
-          onKeyDown: composeEventHandlers(onKeyDown, this.input_handleKeyDown),
-          onBlur: composeEventHandlers(onBlur, this.input_handleBlur),
-        }
     return {
       role: 'combobox',
       'aria-autocomplete': 'list',
@@ -878,13 +892,15 @@ class Downshift extends Component {
         this.isMouseDown = true
       }
       const onMouseUp = event => {
-        const {document} = this.props.environment
         this.isMouseDown = false
         const targetInDownshift =
           this._rootNode && isOrContainsNode(this._rootNode, event.target)
         const activeElementInDownshift =
           this._rootNode &&
-          isOrContainsNode(this._rootNode, document.activeElement)
+          isOrContainsNode(
+            this._rootNode,
+            this.props.environment.document.activeElement,
+          )
         if (
           !targetInDownshift &&
           !activeElementInDownshift &&
