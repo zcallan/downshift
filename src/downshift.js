@@ -583,6 +583,7 @@ class Downshift extends Component {
     // don't give the button the focus properly.
     /* istanbul ignore if (can't reasonably test this) */
     if (
+      /* istanbul ignore next (react-native) */
       preval`module.exports = process.env.BUILD_REACT_NATIVE !== 'true'` &&
       this.props.environment.document.activeElement ===
         this.props.environment.document.body
@@ -658,9 +659,9 @@ class Downshift extends Component {
     }
     this.inputId = firstDefined(this.inputId, rest.id, `${this.id}-input`)
     let eventHandlers
+    /* istanbul ignore next*/
     if (rest.disabled) {
       eventHandlers = {}
-      /* istanbul ignore next (preact) */
     } else if (preval`module.exports = process.env.BUILD_PREACT === 'true'`) {
       eventHandlers = {
         onInput: composeEventHandlers(
@@ -671,7 +672,6 @@ class Downshift extends Component {
         onKeyDown: composeEventHandlers(onKeyDown, this.input_handleKeyDown),
         onBlur: composeEventHandlers(onBlur, this.input_handleBlur),
       }
-      /* istanbul ignore next (react-native) */
     } else if (
       preval`module.exports = process.env.BUILD_REACT_NATIVE === 'true'`
     ) {

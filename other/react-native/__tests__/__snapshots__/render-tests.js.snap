@@ -9,9 +9,7 @@ exports[`renders with React Native components 1`] = `
     aria-expanded={false}
     autoComplete="off"
     id="downshift-0-input"
-    onBlur={[Function]}
     onChangeText={[Function]}
-    onKeyDown={[Function]}
     role="combobox"
     value=""
   />
